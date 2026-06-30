@@ -28,21 +28,7 @@ type DocumentTheme = 'dark-mode' | 'light-mode';
 export type Theme = DocumentTheme | 'system';
 
 const kDefaultTheme: Theme = 'system';
-// Namespaced storage key to avoid collisions with the host page's localStorage
-// when the report/trace viewer/recorder is served from a shared origin.
 const kThemeSettingsKey = 'pw-theme';
-// Legacy un-namespaced key, kept for one-time migration of existing preferences.
-const kLegacyThemeSettingsKey = 'theme';
-
-function migrateLegacyThemeSetting() {
-  const legacyValue = settings.getString<Theme | ''>(kLegacyThemeSettingsKey, '');
-  if (!legacyValue)
-    return;
-  if (!settings.getString<Theme | ''>(kThemeSettingsKey, ''))
-    settings.setString(kThemeSettingsKey, legacyValue);
-  settings.removeSetting(kLegacyThemeSettingsKey);
-}
-
 export const kThemeOptions: { label: string; value: Theme }[] = [
   { label: 'Dark mode', value: 'dark-mode' },
   { label: 'Light mode', value: 'light-mode' },
@@ -55,7 +41,6 @@ export function applyTheme() {
   if (document.playwrightThemeInitialized)
     return;
   document.playwrightThemeInitialized = true;
-  migrateLegacyThemeSetting();
   document!.defaultView!.addEventListener('focus', (event: any) => {
     if (event.target.document.nodeType === Node.DOCUMENT_NODE)
       document.body.classList.remove('inactive');
