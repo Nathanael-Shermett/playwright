@@ -187,6 +187,12 @@ export class Settings {
     this.onChangeEmitter.dispatchEvent(new Event(name));
     window.saveSettings?.();
   }
+
+  removeSetting(name: string) {
+    delete localStorage[name];
+    this.onChangeEmitter.dispatchEvent(new Event(name));
+    window.saveSettings?.();
+  }
 }
 
 export const settings = new Settings();

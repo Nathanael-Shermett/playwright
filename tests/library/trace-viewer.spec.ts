@@ -2060,6 +2060,23 @@ test('should toggle theme color', async ({ showTraceViewer }) => {
   await expect(traceViewer.page.locator('html')).toHaveClass('light-mode');
 });
 
+test('should migrate legacy theme storage key', async ({ showTraceViewer }) => {
+  const traceViewer = await showTraceViewer(traceFile);
+
+  // Simulate a preference saved under the legacy un-namespaced key.
+  await traceViewer.page.evaluate(() => {
+    localStorage.removeItem('pw-theme');
+    localStorage.setItem('theme', 'dark-mode');
+  });
+  await traceViewer.page.reload();
+
+  await expect(traceViewer.page.locator('html')).toHaveClass('dark-mode');
+  await expect.poll(() => traceViewer.page.evaluate(() => ({
+    legacy: localStorage.getItem('theme'),
+    namespaced: localStorage.getItem('pw-theme'),
+  }))).toEqual({ legacy: null, namespaced: 'dark-mode' });
+});
+
 test('should reflect system color scheme changes in document theme', async ({ showTraceViewer }) => {
   const traceViewer = await showTraceViewer(traceFile);
   await traceViewer.selectAction('Navigate');
