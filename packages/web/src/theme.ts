@@ -28,7 +28,7 @@ type DocumentTheme = 'dark-mode' | 'light-mode';
 export type Theme = DocumentTheme | 'system';
 
 const kDefaultTheme: Theme = 'system';
-const kThemeSettingsKey = 'theme';
+const kThemeSettingsKey = 'playwright-theme';
 export const kThemeOptions: { label: string; value: Theme }[] = [
   { label: 'Dark mode', value: 'dark-mode' },
   { label: 'Light mode', value: 'light-mode' },
